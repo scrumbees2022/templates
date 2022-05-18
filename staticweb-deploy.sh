@@ -4,5 +4,6 @@ TOKEN=$1
 
 az deployment group create \
 --resource-group $RG \
---parameters repositoryToken=$TOKEN @staticweb-parameters.json \
+--parameters @staticweb-parameters.json \
+--parameters repositoryToken=$TOKEN \
 --template-file "staticweb-template.json"
