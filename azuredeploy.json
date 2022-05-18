@@ -26,14 +26,14 @@
     },
     "sku": {
       "type": "string",
-      "defaultValue": "F1",
+      "defaultValue": "B1",
       "metadata": {
         "description": "The SKU of App Service Plan."
       }
     },
     "linuxFxVersion": {
       "type": "string",
-      "defaultValue": "DOTNETCORE|3.0",
+      "defaultValue": "PYTHON|3.9",
       "metadata": {
         "description": "The Runtime stack of current web app"
       }
@@ -44,16 +44,23 @@
       "metadata": {
         "description": "Optional Git Repo URL"
       }
+    },
+    "appServicePlanPortalName": {
+      "type": "string",
+      "defaultValue": "AppServicePlan",
+      "metadata": {
+        "description": "App Service Plan name"
+      }
     }
   },
   "variables": {
-    "appServicePlanPortalName": "[format('AppServicePlan-{0}', parameters('webAppName'))]"
+   
   },
   "resources": [
     {
       "type": "Microsoft.Web/serverfarms",
       "apiVersion": "2021-02-01",
-      "name": "[variables('appServicePlanPortalName')]",
+      "name": "[parameters('appServicePlanPortalName')]",
       "location": "[parameters('location')]",
       "sku": {
         "name": "[parameters('sku')]"
@@ -70,7 +77,7 @@
       "location": "[parameters('location')]",
       "properties": {
         "httpsOnly": true,
-        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanPortalName'))]",
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanPortalName'))]",
         "siteConfig": {
           "linuxFxVersion": "[parameters('linuxFxVersion')]",
           "minTlsVersion": "1.2",
@@ -81,7 +88,7 @@
         "type": "SystemAssigned"
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanPortalName'))]"
+        "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanPortalName'))]"
       ]
     },
     {

@@ -5,11 +5,8 @@
         "webAppName": {
             "value": "testingarmtemplate"
         },
-        "location": {
-            "value": "centralus"
-        },
         "sku": {
-            "value": "F1"
+            "value": "S1"
         },
         "linuxFxVersion": {
             "value": "PYTHON|3.9"

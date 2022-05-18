@@ -1,0 +1,36 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "name": {
+            "value": "portal"
+        },
+        "location": {
+            "value": "centralus"
+        },
+        "sku": {
+            "value": "Free"
+        },
+        "skucode": {
+            "value": "Free"
+        },
+        "repositoryUrl": {
+            "value": "https://github.com/scrumbees2022/portal_webpage"
+        },
+        "branch": {
+            "value": "main"
+        },
+        "repositoryToken": {
+            "value": null
+        },
+        "appLocation": {
+            "value": "/"
+        },
+        "apiLocation": {
+            "value": ""
+        },
+        "appArtifactLocation": {
+            "value": ""
+        }
+    }
+}
