@@ -3,10 +3,10 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "webAppName": {
-            "value": "testingarmtemplate"
+            "value": "scrumbees-stroke-prediction"
         },
         "sku": {
-            "value": "S1"
+            "value": "B1"
         },
         "linuxFxVersion": {
             "value": "PYTHON|3.9"
