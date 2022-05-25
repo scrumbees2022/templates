@@ -15,7 +15,7 @@ APP_REPO="https://github.com/scrumbees2022/diabetesprediction"
 APP_BRANCH="master"
 
 # container app deployment parameters:
-CONTAINER_NAME="scrumbees-stroke-container"
+CONTAINER_NAME="scrumbees-stroke-prediction"
 CONTAINER_IMAGE="sebusch/stroke-prediction:latest"
 
 
