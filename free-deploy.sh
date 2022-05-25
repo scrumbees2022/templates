@@ -9,22 +9,28 @@ LOC="westus"
 ASP="AppServicePlan"
 SKU="F1"
 
-# stroke app parameters:
-APP_NAME="scrumbees-stroke-prediction"
-APP_REPO="https://github.com/scrumbees2022/strokeprediction"
-APP_BRANCH="main"
+# python app deployment parameters:
+APP_NAME="scrumbees-diabetes-prediction"
+APP_REPO="https://github.com/scrumbees2022/diabetesprediction"
+APP_BRANCH="master"
 
+# container app deployment parameters:
+CONTAINER_NAME="scrumbees-stroke-container"
+CONTAINER_IMAGE="sebusch/stroke-prediction:latest"
+
+
+# Create a resource group
 az group create --name $RG --location $LOC
 
+# deploy static portal page
 az deployment group create \
 --resource-group $RG \
 --parameters @staticweb-parameters.json \
 --parameters repositoryToken=$TOKEN \
 --template-file "staticweb-template.json"
 
-# deploy container.
-CONTAINER_NAME="scrumbees-stroke-container"
-CONTAINER_IMAGE="sebusch/stroke-prediction:latest"
+# deploy container using CLI commands
+
 # 1. Create appservice plan
 az appservice plan create --name $ASP --resource-group $RG --sku $SKU --is-linux
 
@@ -44,7 +50,7 @@ az webapp deployment container config --enable-cd true \
 # This above command will output a URL which I need to paste into my docker repo
 
 
-# deploy to python web app.
+# deploy python web app using template
 az deployment group create \
 --resource-group $RG \
 --parameters @azuredeploy.parameters.json \
@@ -53,15 +59,9 @@ az deployment group create \
 --template-file "azuredeploy.json"
 
 # Configure to CI/CD github actions
-# again not perfect way.
 az webapp deployment source config --name $APP_NAME \
 --resource-group $RG --repo-url $APP_REPO \
 --branch $APP_BRANCH --git-token $TOKEN
-
-# not perfect solution, but modity this deployment to add github actions.
-# required parameters: github repo, webapp name.
-# az webapp deployment github-actions add --repo "scrumbees2022/strokeprediction" \
-# -g $RG -n scrumbees-stroke-prediction --token $TOKEN
 
 echo "Webhook URL for Docker Hub repo:"
 cat webhook_url.txt
