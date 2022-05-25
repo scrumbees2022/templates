@@ -49,4 +49,4 @@ az webapp deployment github-actions add --repo "scrumbees2022/strokeprediction" 
 -g $RG -n scrumbees-stroke-prediction --token $TOKEN
 
 echo "Webhook URL for Docker Hub repo:"
-cat webhook_url
+cat webhook_url.txt
