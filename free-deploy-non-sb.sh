@@ -29,10 +29,25 @@ az deployment group create \
 --parameters repositoryToken=$TOKEN \
 --template-file "staticweb-template.json"
 
+
+# deploy python web app using template
+az deployment group create \
+--resource-group $RG \
+--parameters @azuredeploy.parameters.json \
+--parameters appServicePlanPortalName=$ASP sku=$SKU \
+--parameters webAppName=$APP_NAME repoUrl=$APP_REPO branch=$APP_BRANCH \
+--template-file "azuredeploy.json"
+
+# Configure to CI/CD github actions
+az webapp deployment source config --name $APP_NAME \
+--resource-group $RG --repo-url $APP_REPO \
+--branch $APP_BRANCH --git-token $TOKEN
+
+
 # deploy container using CLI commands
 
-# 1. Create appservice plan
-az appservice plan create --name $ASP --resource-group $RG --sku $SKU --is-linux
+# # 1. Create appservice plan ---- Created using deployment template above.
+# az appservice plan create --name $ASP --resource-group $RG --sku $SKU --is-linux
 
 # 2. Create webapp from docker hub
 az webapp create --resource-group $RG --plan $ASP \
@@ -49,19 +64,6 @@ az webapp deployment container config --enable-cd true \
 --query CI_CD_URL --output tsv > webhook_url.txt
 # This above command will output a URL which I need to paste into my docker repo
 
-
-# deploy python web app using template
-az deployment group create \
---resource-group $RG \
---parameters @azuredeploy.parameters.json \
---parameters appServicePlanPortalName=$ASP sku=$SKU \
---parameters webAppName=$APP_NAME repoUrl=$APP_REPO branch=$APP_BRANCH \
---template-file "azuredeploy.json"
-
-# Configure to CI/CD github actions
-az webapp deployment source config --name $APP_NAME \
---resource-group $RG --repo-url $APP_REPO \
---branch $APP_BRANCH --git-token $TOKEN
 
 echo "Webhook URL for Docker Hub repo:"
 cat webhook_url.txt
