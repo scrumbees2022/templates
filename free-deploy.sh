@@ -5,8 +5,14 @@ TOKEN=$1
 
 RG="webapps"
 LOC="westus"
+
 ASP="AppServicePlan"
 SKU="F1"
+
+# stroke app parameters:
+APP_NAME="scrumbees-stroke-prediction"
+APP_REPO="https://github.com/scrumbees2022/strokeprediction"
+APP_BRANCH="main"
 
 az group create --name $RG --location $LOC
 
@@ -16,21 +22,24 @@ az deployment group create \
 --parameters repositoryToken=$TOKEN \
 --template-file "staticweb-template.json"
 
-# try for deploy container.
-
+# deploy container.
+CONTAINER_NAME="scrumbees-stroke-container"
+CONTAINER_IMAGE="sebusch/stroke-prediction:latest"
 # 1. Create appservice plan
 az appservice plan create --name $ASP --resource-group $RG --sku $SKU --is-linux
+
 # 2. Create webapp from docker hub
 az webapp create --resource-group $RG --plan $ASP \
---name scrumbees-stroke-container \
--i sebusch/stroke-prediction:latest
+--name $CONTAINER_NAME \
+-i $CONTAINER_IMAGE
 
 # 3. Configure webapp to listen on correct port
 az webapp config appsettings set --resource-group $RG \
---name scrumbees-stroke-container --settings WEBSITES_PORT=5000
+--name $CONTAINER_NAME --settings WEBSITES_PORT=5000
+
 # 4. Turn on CD -- it doesn't actually make the webhook for you
 az webapp deployment container config --enable-cd true \
---name scrumbees-stroke-container --resource-group $RG \
+--name $CONTAINER_NAME --resource-group $RG \
 --query CI_CD_URL --output tsv > webhook_url.txt
 # This above command will output a URL which I need to paste into my docker repo
 
@@ -39,15 +48,15 @@ az webapp deployment container config --enable-cd true \
 az deployment group create \
 --resource-group $RG \
 --parameters @azuredeploy.parameters.json \
---parameters appServicePlanPortalName=$ASP \
---parameters sku=$SKU \
+--parameters appServicePlanPortalName=$ASP sku=$SKU \
+--parameters webAppName=$APP_NAME repoUrl=$APP_REPO branch=$APP_BRANCH \
 --template-file "azuredeploy.json"
 
 # Configure to CI/CD github actions
 # again not perfect way.
-az webapp deployment source config --name scrumbees-stroke-prediction \
---resource-group $RG --repo-url "https://github.com/scrumbees2022/strokeprediction" \
---branch main --git-token $TOKEN
+az webapp deployment source config --name $APP_NAME \
+--resource-group $RG --repo-url $APP_REPO \
+--branch $APP_BRANCH --git-token $TOKEN
 
 # not perfect solution, but modity this deployment to add github actions.
 # required parameters: github repo, webapp name.

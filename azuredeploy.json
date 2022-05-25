@@ -45,6 +45,13 @@
         "description": "Optional Git Repo URL"
       }
     },
+    "branch": {
+      "type": "string",
+      "defaultValue": "main",
+      "metadata": {
+        "description": "git branch name"
+      }
+    },
     "appServicePlanPortalName": {
       "type": "string",
       "defaultValue": "AppServicePlan",
@@ -98,7 +105,7 @@
       "name": "[format('{0}/{1}', parameters('webAppName'), 'web')]",
       "properties": {
         "repoUrl": "[parameters('repoUrl')]",
-        "branch": "main",
+        "branch": "[parameters('branch')]",
         "isManualIntegration": true
       },
       "dependsOn": [

@@ -13,6 +13,9 @@
         },
         "repoUrl": {
             "value": "https://github.com/scrumbees2022/strokeprediction"
+        },
+        "branch": {
+            "value": "main"
         }
     }
 }
