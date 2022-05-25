@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
 
 TOKEN=$1
-# Get sandbox resource group.
-RG=$(az group list --query [].name -o tsv)
+#RG=$(az group list --query [].name -o tsv)
 
-#RG="webapps"
-#LOC="westus"
+RG="webapps"
+LOC="westus"
 
 ASP="AppServicePlan"
 SKU="F1"
@@ -20,8 +19,8 @@ CONTAINER_NAME="scrumbees-stroke-prediction"
 CONTAINER_IMAGE="sebusch/stroke-prediction:latest"
 
 
-# Create a resource group -- don't need this for sandbox.
-#az group create --name $RG --location $LOC
+# Create a resource group
+az group create --name $RG --location $LOC
 
 # deploy static portal page
 az deployment group create \
